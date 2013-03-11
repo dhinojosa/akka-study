@@ -1,4 +1,4 @@
-package com.evolutionnext.actors.simple
+package akkastudy.nonexhaustiveactor.scala
 
 import akka.actor.{Props, ActorSystem, ActorLogging, Actor}
 

@@ -14,7 +14,8 @@ public class TypedActorTest {
         ActorSystem system = ActorSystem.create("MySystem");
         RegistrationActor registrationActor =
           TypedActor.get(system).typedActorOf(
-            new TypedProps<RegistrationActorImpl>(RegistrationActor.class, RegistrationActorImpl.class));
+            new TypedProps<RegistrationActorImpl>(RegistrationActor.class, RegistrationActorImpl.class),
+                  "registrationActor");
         registrationActor.registerPerson(new Person("Abraham", "Lincoln"));
         assertThat(registrationActor.getCount()).isEqualTo(1);
     }
