@@ -3,6 +3,7 @@ package akkastudy.nonexhaustiveactor.scala
 import akka.actor.{Props, ActorSystem, ActorLogging, Actor}
 
 class NonExhaustiveSimpleActor extends Actor with ActorLogging {
+
   override def preStart() {
     log.info("Running Pre-start")
   }

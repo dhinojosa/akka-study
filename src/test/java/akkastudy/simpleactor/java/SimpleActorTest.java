@@ -12,6 +12,6 @@ public class SimpleActorTest {
         ActorSystem system = ActorSystem.create("MySystem");
         ActorRef myActor = system.actorOf(new Props(SimpleActorJava.class), "simpleActorJava");
         ActorRef deadLettersActor = system.actorFor("/deadLetters");
-        myActor.tell("Bueno!", deadLettersActor);
+        myActor.tell("Bueno!");
     }
 }

@@ -12,15 +12,11 @@ class FuturesActor extends Actor {
 
   def receive = {
     case "What is the meaning of love?" ⇒ {
-      sender ! Future {
-        "I am not quite sure"
-      }
+      sender ! "I am not quite sure"
     }
     case _ ⇒ {
       log.info("received unknown message in FuturesActor")
-      sender ! Future {
-        "Complete chaos in your life"
-      }
+      sender ! "Complete chaos in your life"
     }
   }
 }

@@ -11,6 +11,7 @@ class SimpleActorTest extends FlatSpec {
     val system = ActorSystem("MySystem")
     val myActor = system.actorOf(Props[SimpleActorScala], name = "simpleActorJava")
     myActor ! "Simple Test"
+    myActor ! "test"
   }
 
   it should "be at location akka://MySystem/user/simpleActorJava" in {
