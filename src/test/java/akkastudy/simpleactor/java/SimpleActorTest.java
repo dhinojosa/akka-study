@@ -10,8 +10,9 @@ public class SimpleActorTest {
     @Test
     public void testActor() {
         ActorSystem system = ActorSystem.create("MySystem");
-        ActorRef myActor = system.actorOf(new Props(SimpleActorJava.class), "simpleActorJava");
+        ActorRef myActor = system.actorOf(new Props(SimpleActorJava.class),
+                 "simpleActorJava");
         ActorRef deadLettersActor = system.actorFor("/deadLetters");
-        myActor.tell("Bueno!");
+        myActor.tell("Bueno!", deadLettersActor);
     }
 }
