@@ -31,6 +31,7 @@ import akkastudy.SenderActor
  * akkastudy.futures.scala.FuturesTest are a suite of tests that
  * show various uses of Futures in Scala.
  */
+
 class FuturesTest extends FlatSpec with MustMatchers {
   behavior of "An Actor System should"
 
