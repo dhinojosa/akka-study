@@ -12,6 +12,7 @@ class FuturesActor extends Actor {
 
   def receive = {
     case "What is the meaning of love?" ⇒ {
+      Thread.sleep(2000)
       sender ! "I am not quite sure"
     }
     case _ ⇒ {
