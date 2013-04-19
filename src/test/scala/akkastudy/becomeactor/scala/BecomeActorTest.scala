@@ -23,6 +23,6 @@ class BecomeActorTest extends FlatSpec with MustMatchers {
     (becomeActor!("spendTimeInPrison"))     //No
     (becomeActor!("goOutToDinner"))         //Nom
     (becomeActor!("askForgiveness"))        //No Response
-    (becomeActor!("goHiking"))              //Good Hike!
+    (becomeActor!("goHiking"))               //Good Hike!
   }
 }

@@ -19,3 +19,4 @@ libraryDependencies ++= Seq (
    "com.novocode" % "junit-interface" % "0.10-M3" % "test",                           // To Use JUnit for Java Testing
    "org.easytesting" % "fest-assert" % "1.4" % "test" withSources() withJavadoc()     // Made for better Java Unit Assertions
 )
+

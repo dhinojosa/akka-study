@@ -2,7 +2,6 @@ package akkastudy.simpleactor.scala
 
 import org.scalatest.FlatSpec
 import akka.actor.{Props, ActorSystem}
-import akkastudy.loggingactor.scala.SimpleActorScala
 
 class SimpleActorTest extends FlatSpec {
   behavior of "A simple actor"

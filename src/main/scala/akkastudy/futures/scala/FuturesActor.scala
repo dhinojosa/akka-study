@@ -14,6 +14,7 @@ class FuturesActor extends Actor {
     case "What is the meaning of love?" ⇒ {
       Thread.sleep(2000)
       sender ! "I am not quite sure"
+      sender ! "Wait I know, Beef and Cheddar!"
     }
     case _ ⇒ {
       log.info("received unknown message in FuturesActor")

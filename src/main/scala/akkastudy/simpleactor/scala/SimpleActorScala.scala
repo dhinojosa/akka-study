@@ -1,4 +1,4 @@
-package akkastudy.simpleactor
+package akkastudy.simpleactor.scala
 
 import akka.actor.Actor
 import akka.event.Logging
