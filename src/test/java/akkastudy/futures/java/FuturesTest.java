@@ -14,24 +14,8 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import static org.fest.assertions.Assertions.assertThat;
-
 /**
- * Copyright 2013 Daniel Hinojosa
- * <p/>
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * <p/>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p/>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * <p/>
- * akkastudy.futures.java.FuturesTest are a suite of tests that
+ * A suite of tests that
  * show various uses of Futures in Java.
  */
 
@@ -42,7 +26,7 @@ public class FuturesTest {
      * command line first time, then the result of "Hello World" then "Step 2".  This should display always.
      * Finally the assertion will determine that we indeed got the result were looking for.
      *
-     * @throws Exception
+     * @throws Exception if the timeout lapses waiting for the result
      */
     @Test
     public void testBasicFutures() throws Exception {
@@ -64,12 +48,22 @@ public class FuturesTest {
         System.out.println("Step 2");
     }
 
+    /**
+     * Under the covers a Partial Function that waits for a success deliver of a future, when called will call the
+     * {#onSuccess} method.
+     *
+     * @param <T> parameter type of the success that is to be delivered
+     */
     public final static class PrintResult<T> extends OnSuccess<T> {
-        @Override public final void onSuccess(T t) {
+        @Override
+        public final void onSuccess(T t) {
             System.out.println(t);
         }
     }
 
+    /**
+     * @throws Exception
+     */
     @Test
     public void testAsynchronousCall() throws Exception {
         ExecutorService executorService = Executors.newFixedThreadPool(12);
