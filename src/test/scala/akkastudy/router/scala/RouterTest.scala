@@ -14,7 +14,7 @@ class RouterTest extends FlatSpec with MustMatchers {
   it should
     """hand off work to each routee to distribute load. It
       | should also do so using configuration""" in {
-    val config = ConfigFactory.load()
+    val config = ConfigFactory.load()  //default configuration
     val system = ActorSystem("MySystem",
       config.getConfig("routing-system").withFallback(config))
     val router = system.

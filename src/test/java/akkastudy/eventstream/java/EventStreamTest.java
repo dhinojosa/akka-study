@@ -15,6 +15,6 @@ public class EventStreamTest {
         system.eventStream().subscribe(actor, DeadLetter.class);
         ActorRef nonExistentActor =
                 system.actorFor("akka://MySystem/user/somethingElseIShouldn\'tBeLookingFor");
-        nonExistentActor.tell("Bueno!");
+        nonExistentActor.tell("Bueno!", null);
     }
 }

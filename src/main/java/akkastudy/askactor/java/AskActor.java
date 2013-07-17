@@ -15,7 +15,7 @@ public class AskActor extends UntypedActor {
     @Override
     public void onReceive(Object message) throws Exception {
         if (message.equals("Ping")) {
-          sender().tell("Pong");
+          sender().tell("Pong", null);
         }
     }
 }

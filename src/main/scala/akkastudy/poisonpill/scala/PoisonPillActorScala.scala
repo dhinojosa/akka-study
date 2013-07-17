@@ -8,7 +8,7 @@ class PoisonPillActorScala extends Actor {
 
   def receive = {
     case "test" ⇒ log.info("received message test in Simple Actor Scala")
-    case _ ⇒ log.info("received unknown message test in Simple Actor Scala")
+    case i @ _ ⇒ log.info("received unknown message test in Simple Actor Scala {}", i)
   }
 
   override def postStop() {
