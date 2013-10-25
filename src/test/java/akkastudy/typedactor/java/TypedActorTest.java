@@ -17,10 +17,7 @@ public class TypedActorTest {
             new TypedProps<RegistrationActorImpl>
               (RegistrationActor.class, RegistrationActorImpl.class),
                   "registrationActor");
-        TypedActor.get(system).typedActorOf(
-                new TypedProps<RegistrationActorImpl>
-                        (RegistrationActor.class, RegistrationActorImpl.class),
-                "registrationActor");
+
         registrationActor.registerPerson(new Person("Abraham", "Lincoln"));
         assertThat(registrationActor.getCount()).isEqualTo(1);
         registrationActor.registerPerson(new Person("George", "Washington"));
