@@ -3,16 +3,15 @@ package akkastudy.futures.java;
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.actor.Props;
-import akka.dispatch.Futures;
-import akka.dispatch.OnComplete;
+import akka.dispatch.*;
 import akka.pattern.Patterns;
 import akka.util.Timeout;
 import akkastudy.askactor.java.AskActor;
 import org.junit.Test;
 import scala.concurrent.Await;
 import scala.concurrent.ExecutionContext;
-import scala.concurrent.ExecutionContext$;
 import scala.concurrent.Future;
+import scala.concurrent.Promise;
 import scala.concurrent.duration.Duration;
 
 import java.util.concurrent.Callable;
@@ -34,8 +33,55 @@ public class FuturesTest {
      */
 
     @Test
+    public void testJavaUtilConcurrentFutures() throws Exception {
+        ExecutorService executorService =
+                Executors.newCachedThreadPool();
+
+        Callable<String> asynchronousTask = new Callable<String>() {
+            @Override
+            public String call() throws Exception {
+                //something expensive
+                Thread.sleep(5000);
+                return "Asynchronous String Result";
+            }
+        };
+
+        java.util.concurrent.Future<String> future =
+                executorService.submit(asynchronousTask);
+        System.out.println("Processing 1");
+        System.out.println(future.get()); //waits if necessary
+        System.out.println("Processing 2");
+    }
+
+
+    @Test
+    public void testJavaUtilConcurrentFuturesAsynchronously() throws Exception {
+        ExecutorService executorService =
+                Executors.newCachedThreadPool();
+
+        Callable<String> asynchronousTask = new Callable<String>() {
+            @Override
+            public String call() throws Exception {
+                //something expensive
+                Thread.sleep(5000);
+                return "Asynchronous String Result";
+            }
+        };
+
+        java.util.concurrent.Future<String> future =
+                executorService.submit(asynchronousTask);
+        System.out.println("Processing Asynchronously 1");
+        while (!future.isDone()) {
+            System.out.println("Doing something else");
+        }
+        System.out.println(future.get()); //waits if necessary
+        System.out.println("Processing Asynchronously 2");
+    }
+
+
+    @Test
     public void testBasicFutures() throws Exception {
-        ExecutionContext executionContext = ExecutionContext$.MODULE$.fromExecutorService(Executors.newFixedThreadPool(12));
+        ExecutionContext executionContext = ExecutionContexts.fromExecutorService(Executors.newFixedThreadPool(12));
 
         Callable<String> callable = new Callable<String>() {
             @Override
@@ -79,7 +125,7 @@ public class FuturesTest {
     @Test
     public void testAsynchronousCall() {
         ExecutorService executorService = Executors.newFixedThreadPool(12);
-        ExecutionContext executionContext = ExecutionContext$.MODULE$.fromExecutorService(executorService);
+        ExecutionContext executionContext = ExecutionContexts.fromExecutorService(executorService);
 
         Callable<String> callable = new Callable<String>() {
             @Override
@@ -97,22 +143,83 @@ public class FuturesTest {
         System.out.println("Test Asynchronous Call: Step 4");
     }
 
-
-    /**
-     * Tests an asynchronous call to an actor, using ask method of Actor.  The ask method will return a future
-     * which will eventually return a result, at which time the {@link PrintResult} class will print the result.
-     */
+    //
     @Test
-    public void testAskActorAsynchronouslyBlocked() {
+    public void testPromises() throws Exception {
+        ExecutorService executorService = Executors.newFixedThreadPool(12);
+        ExecutionContext executionContext = ExecutionContexts.fromExecutorService(executorService);
+
+        class MyCallable implements Callable<Integer> {
+
+            private final Promise<String> promise;
+
+            public MyCallable(Promise<String> promise) {
+                this.promise = promise;
+            }
+
+            @Override
+            public Integer call() throws Exception {
+                Thread.sleep(3000);
+                promise.success("So far so good");
+                Thread.sleep(3000);
+                return 900;
+            }
+        }
+
+        Promise<String> promise = Futures.promise();
+        Future<Integer> future = Futures.future(new MyCallable(promise), executionContext);
+        Future<String> promisedFuture = promise.future();
+
+        future.onSuccess(new OnSuccess<Integer>() {
+            @Override
+            public void onSuccess(Integer result) throws Throwable {
+                System.out.format("Received a response for my future: %s\n", result);
+            }
+        }, executionContext);
+
+        OnFailure onFailure = new OnFailure() {
+            @Override
+            public void onFailure(Throwable failure) throws Throwable {
+                failure.printStackTrace();
+            }
+        };
+        future.onFailure(onFailure, executionContext);
+
+        promisedFuture.onSuccess(new OnSuccess<String>() {
+            @Override
+            public void onSuccess(String result) throws Throwable {
+                System.out.format("Received a response for my promise: %s\n", result);
+            }
+        }, executionContext);
+
+        promisedFuture.onFailure(onFailure, executionContext);
+    }
+
+    //
+//    /**
+//     * Tests an asynchronous call to an actor, using ask method of Actor.  The ask method will return a future
+//     * which will eventually return a result, at which time the {@link PrintResult} class will print the result.
+//     */
+    @Test
+    public void testAskActorAsynchronouslyNonBlocked() {
+        OnComplete onComplete = new OnComplete<Object>() {
+            @Override
+            public void onComplete(Throwable failure, Object success) throws Throwable {
+                if (success != null) System.out.format("Got the answer: %s\n", success);
+                else failure.printStackTrace();
+            }
+        };
+
         Timeout timeout = new Timeout(Duration.create(5, "seconds"));
         ActorSystem system = ActorSystem.create("MySystem");
         ActorRef actor = system.actorOf(new Props(AskActor.class), "askActor");
+
         Future<Object> future = Patterns.ask(actor, "Ping", timeout);
-        System.out.println("Test Ask Actor Synchronous Call: Step 1");
-        System.out.println("Test Ask Actor Synchronous Call: Step 2");
-        future.onComplete(new PrintResult<>(), system.dispatcher());
-        System.out.println("Test Ask Actor Synchronous Call: Step 3");
-        System.out.println("Test Ask Actor Synchronous Call: Step 4");
+        System.out.println("Test Ask Actor Asynchronous Call: Step 1");
+        System.out.println("Test Ask Actor Asynchronous Call: Step 2");
+        future.onComplete(onComplete, system.dispatcher());
+        System.out.println("Test Ask Actor Asynchronous Call: Step 3");
+        System.out.println("Test Ask Actor Asynchronous Call: Step 4");
     }
 
     /**
