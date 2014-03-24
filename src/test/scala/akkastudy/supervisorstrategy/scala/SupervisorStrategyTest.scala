@@ -1,14 +1,13 @@
 package akkastudy.supervisorstrategy.scala
 
-import org.scalatest.FlatSpec
+import org.scalatest.{Matchers, FlatSpec}
 import akka.actor.{ActorRef, Props, ActorSystem}
 import akka.util.Timeout
 import akka.pattern.ask
-import org.scalatest.matchers.MustMatchers
 import scala.concurrent.duration._
 
 
-class SupervisorStrategyTest extends FlatSpec with MustMatchers {
+class SupervisorStrategyTest extends FlatSpec with Matchers {
   behavior of "A supervisor strategy test"
 
   it should "Create any child actor and throw an Illegal Argument Exception" in {
@@ -49,10 +48,11 @@ class SupervisorStrategyTest extends FlatSpec with MustMatchers {
     grandparent ! Props[ExceptionalChildActor]
 
     Thread.sleep(3000)
-    childActorFuture1 foreach { a =>
-      val actorRef = a.asInstanceOf[ActorRef]
+    childActorFuture1 foreach {
+      a =>
+        val actorRef = a.asInstanceOf[ActorRef]
         actorRef ! "NullPointerException" //Asynchronous wait for the ref, throw the IAE
-        (actorRef ? "OK").foreach(_ must be("Message Received: OK"))
+        (actorRef ? "OK").foreach(_ should be("Message Received: OK"))
     }
 
     Thread.sleep(5000)
@@ -76,8 +76,9 @@ class SupervisorStrategyTest extends FlatSpec with MustMatchers {
 
     Thread.sleep(3000)
 
-    grandparentRef ? Props[ExceptionalChildActor] foreach { c =>
-      val childActorRef = c.asInstanceOf[ActorRef]
+    grandparentRef ? Props[ExceptionalChildActor] foreach {
+      c =>
+        val childActorRef = c.asInstanceOf[ActorRef]
         childActorRef ! "ArithmeticException"
     }
 
@@ -99,14 +100,15 @@ class SupervisorStrategyTest extends FlatSpec with MustMatchers {
     val parentActorFuture = grandparent ? Props[OneForOneParentActor]
 
     Thread.sleep(3000)
-    parentActorFuture foreach { a =>
-      val parentActorFutureRef = a.asInstanceOf[ActorRef]
+    parentActorFuture foreach {
+      a =>
+        val parentActorFutureRef = a.asInstanceOf[ActorRef]
         val childActorFutureRef = parentActorFutureRef ? Props[ExceptionalChildActor]
         childActorFutureRef foreach {
           c =>
             val childActorRef = c.asInstanceOf[ActorRef]
             childActorRef ! "NullPointerException"
-            childActorRef ? "OK" foreach (o => o must be("Message Received: OK"))
+            childActorRef ? "OK" foreach (o => o should be("Message Received: OK"))
         }
     }
 
@@ -130,13 +132,15 @@ class SupervisorStrategyTest extends FlatSpec with MustMatchers {
     val parentActorFuture = grandparent ? Props[AllForOneParentActor]
 
     Thread.sleep(3000)
-    parentActorFuture foreach { a =>
-      val parentActorFutureRef = a.asInstanceOf[ActorRef]
+    parentActorFuture foreach {
+      a =>
+        val parentActorFutureRef = a.asInstanceOf[ActorRef]
         val childActorFutureRef = parentActorFutureRef ? Props[ExceptionalChildActor]
-        childActorFutureRef foreach { c =>
-          val childActorRef = c.asInstanceOf[ActorRef]
+        childActorFutureRef foreach {
+          c =>
+            val childActorRef = c.asInstanceOf[ActorRef]
             childActorRef ! "NullPointerException"
-            childActorRef ? "OK" foreach (o => o must be("Message Received: OK"))
+            childActorRef ? "OK" foreach (o => o should be("Message Received: OK"))
         }
     }
     Thread.sleep(5000)

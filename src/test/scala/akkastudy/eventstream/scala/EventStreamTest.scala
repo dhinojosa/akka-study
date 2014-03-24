@@ -11,7 +11,7 @@ class EventStreamTest extends FlatSpec {
     val deadLetterActor = system.actorOf(Props[DeadLetterActor], "deadLetterActor")
     system.eventStream.subscribe(deadLetterActor, classOf[DeadLetter])
 
-    val myActor = system.actorFor("akka://MySystem/user/somethingElseIShouldn\'tBeLookingFor")
-    myActor ! ("Simple Test")
+    val myActor = system.actorSelection("akka://MySystem/user/somethingElseIShouldn\'tBeLookingFor")
+    myActor ! "Simple Test"
   }
 }

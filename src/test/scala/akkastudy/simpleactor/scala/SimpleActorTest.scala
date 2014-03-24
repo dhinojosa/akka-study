@@ -1,7 +1,7 @@
 package akkastudy.simpleactor.scala
 
 import org.scalatest.FlatSpec
-import akka.actor.{Actor, UntypedActorFactory, Props, ActorSystem}
+import akka.actor.{Props, ActorSystem}
 
 class SimpleActorTest extends FlatSpec {
   behavior of "A simple actor"
@@ -20,18 +20,17 @@ class SimpleActorTest extends FlatSpec {
     myActor ! "test"
   }
 
-
   it should "be at location akka://MySystem/user/simpleActorJava" in {
     val system = ActorSystem("MySystem")
     system.actorOf(Props[SimpleActorScala], name = "simpleActorJava")
-    val myActor = system.actorFor("akka://MySystem/user/simpleActorJava")
-    myActor ! "Simple Test"
+    val actorSelection = system.actorSelection("akka://MySystem/user/simpleActorJava")
+    actorSelection ! "Simple Test"
   }
 
   it should "throw send a dead letter if the actor is not found" in {
     val system = ActorSystem("MySystem")
     system.actorOf(Props[SimpleActorScala], name = "simpleActorJava")
-    val myActor = system.actorFor("akka://MySystem/user/somethingElseIShouldn\'tBeLookingFor")
-    myActor ! "Simple Test"
+    val actorSelection = system.actorSelection("akka://MySystem/user/somethingElseIShouldn\'tBeLookingFor")
+    actorSelection ! "Simple Test"
   }
 }

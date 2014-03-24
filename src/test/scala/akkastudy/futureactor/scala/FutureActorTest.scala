@@ -1,7 +1,6 @@
 package akkastudy.futureactor.scala
 
-import org.scalatest.FlatSpec
-import org.scalatest.matchers.MustMatchers
+import org.scalatest.{Matchers, FlatSpec}
 import akka.actor
 import actor.{Props, ActorSystem}
 import akka.util.Timeout
@@ -15,7 +14,7 @@ import scala.concurrent.duration._
  *        email: <a href="mailto:dhinojosa@evolutionnext.com">dhinojosa@evolutionnext.com</a>
  *        tel: 505.363.5832
  */
-class FutureActorTest extends FlatSpec with MustMatchers {
+class FutureActorTest extends FlatSpec with Matchers {
   behavior of "An actor that is waiting for a Future[T]"
 
   it should "not process the future if the thread that runs the actor is reclaimed" in {

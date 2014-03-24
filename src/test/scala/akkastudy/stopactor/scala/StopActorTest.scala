@@ -1,7 +1,6 @@
 package akkastudy.stopactor.scala
 
 import akka.actor.{Props, ActorSystem}
-import akkastudy.loggingactor.scala.SimpleActorScala
 import org.scalatest.FlatSpec
 
 class StopActorTest extends FlatSpec {
@@ -12,7 +11,6 @@ class StopActorTest extends FlatSpec {
     val myActor0 = system.actorOf(Props[StopActorScala], name = "stopActorScala0")
     val myActor1 = system.actorOf(Props[StopActorScala], name = "stopActorScala1")
     val myActor2 = system.actorOf(Props[StopActorScala], name = "stopActorScala2")
-    val myActor3 = system.actorOf(Props[StopActorScala], name = "stopActorScala3")
     myActor0 ! "Simple Test"
     myActor1 ! "test"
     system.stop(myActor2)
