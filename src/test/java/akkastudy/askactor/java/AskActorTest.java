@@ -4,7 +4,6 @@ import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.actor.Props;
 import akka.dispatch.OnSuccess;
-import akkastudy.SenderActor;
 import org.junit.Test;
 import scala.concurrent.Await;
 import scala.concurrent.Future;
@@ -43,7 +42,6 @@ public class AskActorTest {
     public void testBasicSynchronousAsk() throws Exception {
         ActorSystem system = ActorSystem.create("MySystem");
         ActorRef actor = system.actorOf(Props.create(AskActor.class), "askActor");
-        ActorRef sender = system.actorOf(Props.create(SenderActor.class), "senderActor");
         Future<Object> future = ask(actor, "Ping", 4000);
         Await.result(future, Duration.create(5, "seconds"));
     }
