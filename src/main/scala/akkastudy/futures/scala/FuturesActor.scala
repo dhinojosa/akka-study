@@ -2,11 +2,9 @@ package akkastudy.futures.scala
 
 import akka.actor.Actor
 import akka.event.Logging
-import concurrent.Future
 
 class FuturesActor extends Actor {
 
-  import context.dispatcher
 
   val log = Logging(context.system, this)
 
