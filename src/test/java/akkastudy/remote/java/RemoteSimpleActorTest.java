@@ -35,5 +35,7 @@ public class RemoteSimpleActorTest {
                 new Timeout(5000, TimeUnit.MILLISECONDS).duration());
 
         senderActor.tell(remoteActor, deadLettersActorRef);
+        remoteSystem.shutdown();
+        remoteSystem.awaitTermination();
     }
 }

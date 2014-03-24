@@ -13,5 +13,7 @@ class RemoteSimpleActorTest extends FlatSpec {
     val system = ActorSystem("RemoteActorSystem", config.getConfig("remote-system").withFallback(config))
     val myActor = system.actorOf(Props[SimpleActorScala], name = "simpleActorJava")
     myActor ! "Simple Test"
+    system.shutdown()
+    system.awaitTermination()
   }
 }
