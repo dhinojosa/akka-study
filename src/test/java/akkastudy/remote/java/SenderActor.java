@@ -13,6 +13,8 @@ import akka.actor.UntypedActor;
 public class SenderActor extends UntypedActor {
     @Override
     public void onReceive(Object message) throws Exception {
+        System.out.println(String.format("Received Message Back: %s", message));
+
         if (message instanceof ActorRef) {
             ActorRef actorRef = (ActorRef) message;
             actorRef.tell("Message from source", getSelf());
