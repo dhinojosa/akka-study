@@ -14,7 +14,7 @@ public class TypedActorTest {
         ActorSystem system = ActorSystem.create("MySystem");
         RegistrationActor registrationActor =
           TypedActor.get(system).typedActorOf(
-            new TypedProps<RegistrationActorImpl>
+                  new TypedProps<>
               (RegistrationActor.class, RegistrationActorImpl.class),
                   "registrationActor");
 

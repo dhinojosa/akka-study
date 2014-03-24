@@ -1,9 +1,6 @@
 package akkastudy.eventstream.java;
 
-import akka.actor.ActorRef;
-import akka.actor.ActorSystem;
-import akka.actor.DeadLetter;
-import akka.actor.Props;
+import akka.actor.*;
 import org.junit.Test;
 
 public class EventStreamTest {
@@ -11,10 +8,10 @@ public class EventStreamTest {
     @Test
     public void testEventStreamWithDeadLetters() {
         ActorSystem system = ActorSystem.create("MySystem");
-        ActorRef actor = system.actorOf(new Props(MyDeadLetterActorListener.class));
+        ActorRef actor = system.actorOf(Props.create(MyDeadLetterActorListener.class));
         system.eventStream().subscribe(actor, DeadLetter.class);
-        ActorRef nonExistentActor =
-                system.actorFor("akka://MySystem/user/somethingElseIShouldn\'tBeLookingFor");
-        nonExistentActor.tell("Bueno!", null);
+        ActorSelection nonExistentActorSelection =
+                system.actorSelection("akka://MySystem/user/somethingElseIShouldn\'tBeLookingFor");
+        nonExistentActorSelection.tell("Bueno!", null);
     }
 }

@@ -4,7 +4,6 @@ import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.actor.Props;
 import akka.dispatch.OnSuccess;
-import akka.util.Timeout;
 import akkastudy.SenderActor;
 import org.junit.Test;
 import scala.concurrent.Await;
@@ -30,17 +29,21 @@ public class AskActorTest {
     @Test
     public void testBasicAsynchronousAsk() throws InterruptedException {
         ActorSystem system = ActorSystem.create("MySystem");
-        ActorRef actor = system.actorOf(new Props(AskActor.class), "askActor");
-        ActorRef sender = system.actorOf(new Props(SenderActor.class), "senderActor");
+        ActorRef actor = system.actorOf(Props.create(AskActor.class), "askActor");
         Future<Object> future = ask(actor, "Ping", 4000);
-        future.onSuccess(new OnSuccessHandler<>(), system.dispatcher());
+        future.onSuccess(new OnSuccess<Object>() {
+            @Override
+            public void onSuccess(Object result) throws Throwable {
+                System.out.println(result);
+            }
+        }, system.dispatcher());
     }
 
     @Test
     public void testBasicSynchronousAsk() throws Exception {
         ActorSystem system = ActorSystem.create("MySystem");
-        ActorRef actor = system.actorOf(new Props(AskActor.class), "askActor");
-        ActorRef sender = system.actorOf(new Props(SenderActor.class), "senderActor");
+        ActorRef actor = system.actorOf(Props.create(AskActor.class), "askActor");
+        ActorRef sender = system.actorOf(Props.create(SenderActor.class), "senderActor");
         Future<Object> future = ask(actor, "Ping", 4000);
         Await.result(future, Duration.create(5, "seconds"));
     }

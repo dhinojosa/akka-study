@@ -27,11 +27,14 @@ public class SupervisorStrategyTest {
 
         Timeout timeout = new Timeout(5, TimeUnit.SECONDS);
 
-        ActorRef grandparent = system.actorOf(new Props(OneForOneGrandparentActor.class), "GrandparentActorScala");
+        ActorRef grandparent = system.actorOf(Props.create(OneForOneGrandparentActor.class),
+                "GrandparentActorScala");
 
-        Future<Object> childActorFuture1 = Patterns.ask(grandparent, new Props(ExceptionalChildActor.class), timeout);
-        grandparent.tell(new Props(ExceptionalChildActor.class), null);
-        grandparent.tell(new Props(ExceptionalChildActor.class), null);
+        Future<Object> childActorFuture1 = Patterns.ask
+                (grandparent, Props.create(ExceptionalChildActor.class), timeout);
+
+        grandparent.tell(Props.create(ExceptionalChildActor.class), null);
+        grandparent.tell(Props.create(ExceptionalChildActor.class), null);
 
         Thread.sleep(3000);
 
@@ -59,10 +62,10 @@ public class SupervisorStrategyTest {
 
         final Timeout timeout = new Timeout(5, TimeUnit.SECONDS);
 
-        ActorRef grandparent = system.actorOf(new Props(OneForOneGrandparentActor.class), "GrandparentActorScala");
-        Future<Object> childActorFuture1 = Patterns.ask(grandparent, new Props(ExceptionalChildActor.class), timeout);
-        grandparent.tell(new Props(ExceptionalChildActor.class), null);
-        grandparent.tell(new Props(ExceptionalChildActor.class), null);
+        ActorRef grandparent = system.actorOf(Props.create(OneForOneGrandparentActor.class), "GrandparentActorScala");
+        Future<Object> childActorFuture1 = Patterns.ask(grandparent, Props.create(ExceptionalChildActor.class), timeout);
+        grandparent.tell(Props.create(ExceptionalChildActor.class), null);
+        grandparent.tell(Props.create(ExceptionalChildActor.class), null);
 
         Thread.sleep(3000);
 
@@ -99,15 +102,15 @@ public class SupervisorStrategyTest {
 
         Timeout timeout = new Timeout(5, TimeUnit.SECONDS);
 
-        ActorRef grandparent = system.actorOf(new Props(OneForOneGrandparentActor.class), "GrandparentActorScala");
+        ActorRef grandparent = system.actorOf(Props.create(OneForOneGrandparentActor.class), "GrandparentActorScala");
 
-        grandparent.tell(new Props(ExceptionalChildActor.class), null);
-        grandparent.tell(new Props(ExceptionalChildActor.class), null);
-        grandparent.tell(new Props(ExceptionalChildActor.class), null);
+        grandparent.tell(Props.create(ExceptionalChildActor.class), null);
+        grandparent.tell(Props.create(ExceptionalChildActor.class), null);
+        grandparent.tell(Props.create(ExceptionalChildActor.class), null);
 
         Thread.sleep(3000);
 
-        Future<Object> childActorFuture1 = Patterns.ask(grandparent, new Props(ExceptionalChildActor.class), timeout);
+        Future<Object> childActorFuture1 = Patterns.ask(grandparent, Props.create(ExceptionalChildActor.class), timeout);
 
         childActorFuture1.onComplete(
                 new OnComplete<Object>() {
@@ -133,14 +136,14 @@ public class SupervisorStrategyTest {
 
         final Timeout timeout = new Timeout(5, TimeUnit.SECONDS);
 
-        ActorRef grandparent = system.actorOf(new Props(OneForOneGrandparentActor.class), "GrandparentActorScala");
+        ActorRef grandparent = system.actorOf(Props.create(OneForOneGrandparentActor.class), "GrandparentActorScala");
 
 
-        grandparent.tell(new Props(ExceptionalChildActor.class), null);
-        grandparent.tell(new Props(ExceptionalChildActor.class), null);
-        grandparent.tell(new Props(ExceptionalChildActor.class), null);
+        grandparent.tell(Props.create(ExceptionalChildActor.class), null);
+        grandparent.tell(Props.create(ExceptionalChildActor.class), null);
+        grandparent.tell(Props.create(ExceptionalChildActor.class), null);
 
-        Future<Object> parentActorFuture = Patterns.ask(grandparent, new Props(OneForOneParentActor.class), timeout);
+        Future<Object> parentActorFuture = Patterns.ask(grandparent, Props.create(OneForOneParentActor.class), timeout);
 
 
         Thread.sleep(3000);
@@ -151,7 +154,7 @@ public class SupervisorStrategyTest {
                     public void onComplete(Throwable failure, Object success) throws Throwable {
                         ActorRef parentActorFutureRef = (ActorRef) success;
                         Future<Object> childActorFutureRef = Patterns.ask
-                                (parentActorFutureRef, new Props(ExceptionalChildActor.class), timeout);
+                                (parentActorFutureRef, Props.create(ExceptionalChildActor.class), timeout);
                         childActorFutureRef.onComplete(new OnComplete<Object>() {
                             @Override
                             public void onComplete(Throwable failure, Object success) throws Throwable {
@@ -186,14 +189,14 @@ public class SupervisorStrategyTest {
 
         final Timeout timeout = new Timeout(60, TimeUnit.SECONDS);
 
-        ActorRef grandparent = system.actorOf(new Props(OneForOneGrandparentActor.class), "GrandparentActorScala");
+        ActorRef grandparent = system.actorOf(Props.create(OneForOneGrandparentActor.class), "GrandparentActorScala");
 
 
-        grandparent.tell(new Props(ExceptionalChildActor.class), null);
-        grandparent.tell(new Props(ExceptionalChildActor.class), null);
-        grandparent.tell(new Props(ExceptionalChildActor.class), null);
+        grandparent.tell(Props.create(ExceptionalChildActor.class), null);
+        grandparent.tell(Props.create(ExceptionalChildActor.class), null);
+        grandparent.tell(Props.create(ExceptionalChildActor.class), null);
 
-        Future<Object> parentActorFuture = Patterns.ask(grandparent, new Props(AllForOneParentActor.class), timeout);
+        Future<Object> parentActorFuture = Patterns.ask(grandparent, Props.create(AllForOneParentActor.class), timeout);
 
         Thread.sleep(3000);
 
@@ -204,7 +207,7 @@ public class SupervisorStrategyTest {
                         ActorRef parentActorFutureRef = (ActorRef) success;
 
                         Future<Object> childActorFutureRef = Patterns.ask
-                                (parentActorFutureRef, new Props(ExceptionalChildActor.class), timeout);
+                                (parentActorFutureRef, Props.create(ExceptionalChildActor.class), timeout);
 
 
                         childActorFutureRef.onComplete(new OnComplete<Object>() {

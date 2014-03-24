@@ -1,6 +1,10 @@
 package akkastudy.simpleactor.java;
 
-import akka.actor.*;
+import akka.actor.ActorRef;
+import akka.actor.ActorSelection;
+import akka.actor.ActorSystem;
+import akka.actor.Props;
+import akka.japi.Creator;
 import org.junit.Test;
 
 public class SimpleActorTest {
@@ -9,22 +13,24 @@ public class SimpleActorTest {
     public void testActor() {
         ActorSystem system = ActorSystem.create("MySystem");
         ActorRef myActor = system.actorOf(
-                new Props(SimpleActorJava.class),
+                Props.create(SimpleActorJava.class),
                 "simpleActorJava");
-        ActorRef deadLettersActor = system.actorFor("/deadLetters");
-        myActor.tell("Bueno!", deadLettersActor);
+        ActorSelection deadLettersActor = system.actorSelection("/deadLetters");
+        myActor.tell("Bueno!", deadLettersActor.anchor());
     }
 
     @Test
     public void testActorWithAFactory() {
         ActorSystem system = ActorSystem.create("MySystem");
-        ActorRef myActor = system.actorOf(new Props(new UntypedActorFactory() {
-            @Override
-            public Actor create() throws Exception {
-                return new SimpleActorJava();
-            }
-        }), "simpleActorJava");
-        ActorRef deadLettersActor = system.actorFor("/deadLetters");
-        myActor.tell("Bueno!", deadLettersActor);
+        ActorRef myActor = system.actorOf(
+                Props.create(SimpleActorJava.class, new Creator<SimpleActorJava>() {
+                    @Override
+                    public SimpleActorJava create() throws Exception {
+                        return new SimpleActorJava();
+                    }
+                }), "simpleActorJava"
+        );
+        ActorSelection deadLettersActorSelection = system.actorSelection("/deadLetters");
+        myActor.tell("Bueno!", deadLettersActorSelection.anchor());
     }
 }

@@ -80,7 +80,7 @@ public class FuturesTest {
 
 
     @Test
-    public void testBasicFutures() throws Exception {
+    public void testBasicAkkaFutures() throws Exception {
         ExecutionContext executionContext = ExecutionContexts.fromExecutorService(Executors.newFixedThreadPool(12));
 
         Callable<String> callable = new Callable<String>() {
@@ -97,25 +97,6 @@ public class FuturesTest {
         System.out.println("Test Basic Futures: Step 1");
         System.out.println(Await.result(future, timeout.duration())); //blocking
         System.out.println("Test Basic Futures: Step 2");
-    }
-
-    /**
-     * Under the covers a Partial Function that waits for a success deliver of a future, when called will call the
-     * {#onSuccess} method.
-     *
-     * @param <T> parameter type of the success that is to be delivered
-     */
-    public final static class PrintResult<T> extends OnComplete<T> {
-        /**
-         * This method will be invoked once when/if a Future that this callback is registered on
-         * becomes completed with a failure or a success.
-         * In the case of success then "failure" will be null, and in the case of failure the "success" will be null.
-         */
-        @Override
-        public void onComplete(Throwable failure, T success) throws Throwable {
-            if (failure == null) System.out.println(success.toString());
-            else failure.printStackTrace();
-        }
     }
 
     /**
@@ -137,13 +118,18 @@ public class FuturesTest {
         Future<String> future = Futures.future(callable, executionContext);
 
         System.out.println("Test Asynchronous Call: Step 1");
-        future.onComplete(new PrintResult<String>(), executionContext);
+        future.onComplete(new OnComplete<String>() {
+            @Override
+            public void onComplete(Throwable failure, String success) throws Throwable {
+                if (failure != null) System.out.println("Failure:" + failure.getMessage());
+                else System.out.println("Success: " + success);
+            }
+        }, executionContext);
         System.out.println("Test Asynchronous Call: Step 2");
         System.out.println("Test Asynchronous Call: Step 3");
         System.out.println("Test Asynchronous Call: Step 4");
     }
 
-    //
     @Test
     public void testPromises() throws Exception {
         ExecutorService executorService = Executors.newFixedThreadPool(12);
@@ -202,7 +188,7 @@ public class FuturesTest {
 //     */
     @Test
     public void testAskActorAsynchronouslyNonBlocked() {
-        OnComplete onComplete = new OnComplete<Object>() {
+        OnComplete<Object> onComplete = new OnComplete<Object>() {
             @Override
             public void onComplete(Throwable failure, Object success) throws Throwable {
                 if (success != null) System.out.format("Got the answer: %s\n", success);
@@ -212,7 +198,7 @@ public class FuturesTest {
 
         Timeout timeout = new Timeout(Duration.create(5, "seconds"));
         ActorSystem system = ActorSystem.create("MySystem");
-        ActorRef actor = system.actorOf(new Props(AskActor.class), "askActor");
+        ActorRef actor = system.actorOf(Props.create(AskActor.class), "askActor");
 
         Future<Object> future = Patterns.ask(actor, "Ping", timeout);
         System.out.println("Test Ask Actor Asynchronous Call: Step 1");
@@ -232,7 +218,7 @@ public class FuturesTest {
     public void testAskActorSynchronously() throws Exception {
         Timeout timeout = new Timeout(Duration.create(5, "seconds"));
         ActorSystem system = ActorSystem.create("MySystem");
-        ActorRef actor = system.actorOf(new Props(AskActor.class), "askActor");
+        ActorRef actor = system.actorOf(Props.create(AskActor.class), "askActor");
         Future<Object> future = Patterns.ask(actor, "Ping", timeout);
         System.out.println("Test Ask Actor Synchronous Call: Step 1");
         System.out.println("Test Ask Actor Synchronous Call: Step 2");
