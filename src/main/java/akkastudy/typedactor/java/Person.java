@@ -6,8 +6,8 @@ package akkastudy.typedactor.java;
  * Time: 7:01 PM
  */
 public class Person {
-    private String firstName;
-    private String lastName;
+    private final String firstName;
+    private final String lastName;
 
     public Person(String firstName, String lastName) {
         this.firstName = firstName;
@@ -29,16 +29,15 @@ public class Person {
 
         Person person = (Person) o;
 
-        if (firstName != null ? !firstName.equals(person.firstName) : person.firstName != null) return false;
-        if (lastName != null ? !lastName.equals(person.lastName) : person.lastName != null) return false;
+        return !(firstName != null ? !firstName.equals(person.firstName) : person.firstName != null) &&
+                !(lastName != null ? !lastName.equals(person.lastName) : person.lastName != null);
 
-        return true;
     }
 
     @Override
     public int hashCode() {
         int result = firstName != null ? firstName.hashCode() : 0;
-        result = 31 * result + (lastName != null ? lastName.hashCode() : 0);
+        result = 453 * result + (lastName != null ? lastName.hashCode() : 0);
         return result;
     }
 }

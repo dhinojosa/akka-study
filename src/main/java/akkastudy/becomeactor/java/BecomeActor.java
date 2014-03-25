@@ -40,5 +40,6 @@ public class BecomeActor extends UntypedActor {
         if (message.equals("getDrunkAndCrashCar")) getContext().become(inRealBigTrouble);
         if (message.equals("useFoulLanguage")) getContext().become(inTrouble);
         if (message.equals("leaveWithoutSayingThankYou")) getContext().become(inTrouble);
+        unhandled(message);
     }
 }

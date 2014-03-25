@@ -1,15 +1,15 @@
 package akkastudy.supervisorstrategy.java;
 
-import akka.actor.*;
+import akka.actor.OneForOneStrategy;
+import akka.actor.Props;
+import akka.actor.SupervisorStrategy;
+import akka.actor.UntypedActor;
 import akka.japi.Function;
 import scala.concurrent.duration.Duration;
 
 import java.util.concurrent.TimeUnit;
 
-import static akka.actor.SupervisorStrategy.resume;
-import static akka.actor.SupervisorStrategy.stop;
-import static akka.actor.SupervisorStrategy.restart;
-import static akka.actor.SupervisorStrategy.escalate;
+import static akka.actor.SupervisorStrategy.*;
 
 public class OneForOneGrandparentActor extends UntypedActor {
     @Override
@@ -33,5 +33,6 @@ public class OneForOneGrandparentActor extends UntypedActor {
             Props props = (Props) message;
             getSender().tell(getContext().actorOf(props), self());
         }
+        unhandled(message);
     }
 }

@@ -9,10 +9,7 @@ import scala.concurrent.duration.Duration;
 
 import java.util.concurrent.TimeUnit;
 
-import static akka.actor.SupervisorStrategy.stop;
-import static akka.actor.SupervisorStrategy.resume;
-import static akka.actor.SupervisorStrategy.restart;
-import static akka.actor.SupervisorStrategy.escalate;
+import static akka.actor.SupervisorStrategy.*;
 
 public class AllForOneGrandparentActor extends UntypedActor {
 
@@ -36,6 +33,6 @@ public class AllForOneGrandparentActor extends UntypedActor {
         if (message instanceof Props) {
             Props props = (Props) message;
             getSender().tell(getContext().actorOf(props), self());
-        }
+        } else unhandled(message);
     }
 }

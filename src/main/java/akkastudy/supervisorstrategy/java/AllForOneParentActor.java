@@ -4,13 +4,14 @@ import akka.actor.AllForOneStrategy;
 import akka.actor.Props;
 import akka.actor.SupervisorStrategy;
 import akka.actor.SupervisorStrategy.Directive;
-import static akka.actor.SupervisorStrategy.escalate;
-import static akka.actor.SupervisorStrategy.stop;
 import akka.actor.UntypedActor;
 import akka.japi.Function;
 import scala.concurrent.duration.Duration;
 
 import java.util.concurrent.TimeUnit;
+
+import static akka.actor.SupervisorStrategy.escalate;
+import static akka.actor.SupervisorStrategy.stop;
 
 public class AllForOneParentActor extends UntypedActor {
 
@@ -35,5 +36,6 @@ public class AllForOneParentActor extends UntypedActor {
             Props props = (Props) message;
             getSender().tell(getContext().actorOf(props), self());
         }
+        unhandled(message);
     }
 }
