@@ -10,7 +10,6 @@ import akka.event.LoggingAdapter;
 public class DeathWatchActor extends UntypedActor {
     LoggingAdapter log = Logging.getLogger(getContext().system(), this);
 
-
     final ActorRef child = this.getContext().actorOf(Props.empty(), "child");
 
     {

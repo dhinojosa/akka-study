@@ -1,6 +1,8 @@
 package akkastudy.becomeactor.java;
 
 import akka.actor.UntypedActor;
+import akka.event.Logging;
+import akka.event.LoggingAdapter;
 import akka.japi.Procedure;
 
 /**
@@ -11,11 +13,12 @@ import akka.japi.Procedure;
  * tel: 505.363.5832
  */
 public class BecomeActor extends UntypedActor {
+    LoggingAdapter log = Logging.getLogger(getContext().system(), this);
 
     Procedure<Object> inRealBigTrouble = new Procedure<Object>(){
         @Override
         public void apply(Object message) throws Exception {
-            System.out.println(String.format("Become Actor (In Real Big Trouble) received message: %s", message));
+            log.info("Become Actor (In Real Big Trouble) received message: {}", message);
             if (message.equals("spendTimeInPrison")) getContext().unbecome();
             else getSender().tell("No", getSelf());
         }
@@ -24,7 +27,7 @@ public class BecomeActor extends UntypedActor {
     Procedure<Object> inTrouble = new Procedure<Object>(){
         @Override
         public void apply(Object message) throws Exception {
-            System.out.println(String.format("Become Actor (In Trouble) received message: %s", message));
+            log.info("Become Actor (In Trouble) received message: {}", message);
             if (message.equals("askForgiveness")) getContext().unbecome();
             if (message.equals("buyFlowers")) getContext().unbecome();
             if (message.equals("getDrunkAndCrashCar")) getContext().become(inRealBigTrouble);
@@ -34,7 +37,7 @@ public class BecomeActor extends UntypedActor {
 
     @Override
     public void onReceive(Object message) throws Exception {
-        System.out.println(String.format("Become Actor received message: %s", message));
+        log.info("Become Actor received message: {}", message);
         if (message.equals("goHiking")) getSender().tell("Good hike!", getSelf());
         if (message.equals("goOutToDinner")) getSender().tell("Nom", getSelf());
         if (message.equals("getDrunkAndCrashCar")) getContext().become(inRealBigTrouble);
