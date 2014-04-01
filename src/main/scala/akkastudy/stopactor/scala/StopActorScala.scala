@@ -12,6 +12,6 @@ class StopActorScala extends Actor {
   }
 
   override def postStop() {
-    println("Actor stopped")
+    log.info("Actor stopped")
   }
 }

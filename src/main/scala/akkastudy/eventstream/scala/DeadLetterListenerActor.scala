@@ -3,7 +3,7 @@ package akkastudy.eventstream.scala
 import akka.actor.{DeadLetter, Actor}
 import akka.event.Logging
 
-class DeadLetterActor extends Actor {
+class DeadLetterListenerActor extends Actor {
   val log = Logging(context.system, this)
 
   def receive = {
