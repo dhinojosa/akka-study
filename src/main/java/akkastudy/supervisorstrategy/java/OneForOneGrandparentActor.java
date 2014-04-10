@@ -9,8 +9,6 @@ import scala.concurrent.duration.Duration;
 
 import java.util.concurrent.TimeUnit;
 
-import static akka.actor.SupervisorStrategy.*;
-
 public class OneForOneGrandparentActor extends UntypedActor {
     @Override
     public SupervisorStrategy supervisorStrategy() {
@@ -18,10 +16,10 @@ public class OneForOneGrandparentActor extends UntypedActor {
                 new Function<Throwable, SupervisorStrategy.Directive>() {
                     @Override
                     public SupervisorStrategy.Directive apply(Throwable param) throws Exception {
-                        if (param instanceof IllegalArgumentException) return stop();
-                        if (param instanceof ArithmeticException) return resume();
-                        if (param instanceof NullPointerException) return restart();
-                        else return escalate();
+                        if (param instanceof IllegalArgumentException) return SupervisorStrategy.stop();
+                        if (param instanceof ArithmeticException) return SupervisorStrategy.resume();
+                        if (param instanceof NullPointerException) return SupervisorStrategy.restart();
+                        else return SupervisorStrategy.escalate();
                     }
                 }
         );
