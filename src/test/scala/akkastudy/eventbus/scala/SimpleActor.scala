@@ -15,6 +15,6 @@ class SimpleActor extends Actor with ActorLogging {
     case "Alpha" => log.info("Alpha Received")
     case "Beta" => log.info("Beta Received")
     case "Gamma" => log.info("Gamma Received")
-    case _ => log.info("Other Received")
+    case _ => log.info("Other Received"); this.context.system.eventStream.publish("Other info received")
   }
 }
