@@ -12,9 +12,13 @@ import akka.actor.{ActorLogging, Actor}
  */
 class SimpleActor extends Actor with ActorLogging {
   override def receive: Receive = {
-    case "Alpha" => log.info("Alpha Received")
-    case "Beta" => log.info("Beta Received")
-    case "Gamma" => log.info("Gamma Received")
-    case _ => log.info("Other Received"); this.context.system.eventStream.publish("Other info received")
+    context.system.eventStream.publish("Simple Actor info received")
+
+    {
+        case "Alpha" => log.info("Alpha Received")
+        case "Beta" => log.info("Beta Received")
+        case "Gamma" => log.info("Gamma Received")
+        case _ => log.info("Other Received")
+    }
   }
 }

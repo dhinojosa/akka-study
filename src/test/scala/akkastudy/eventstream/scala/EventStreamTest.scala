@@ -9,17 +9,17 @@ class EventStreamTest extends FlatSpec {
 
   it should "throw send a dead letter if the actor is not found" in {
     val system = ActorSystem("MySystem")
-    val deadLetterListenerActor = system.actorOf(Props(classOf[ListenerActor]), "deadLetterListenerActor")
-    system.eventStream.subscribe(deadLetterListenerActor, classOf[DeadLetter])
+    val listenerActor = system.actorOf(Props(classOf[ListenerActor]), "listenerActor")
+    system.eventStream.subscribe(listenerActor, classOf[DeadLetter])
     val myActor = system.actorSelection("akka://MySystem/user/somethingElseIShouldn\'tBeLookingFor")
     myActor ! "Simple Test"
   }
 
   it should "throw send refer to an actor when an event happens" in {
     val system = ActorSystem("MySystem")
-    val deadLetterListenerActor = system.actorOf(Props(classOf[ListenerActor]), "deadLetterListenerActor")
+    val listenerActor = system.actorOf(Props(classOf[ListenerActor]), "listenerActor")
     val simpleActor = system.actorOf(Props(classOf[SimpleActor]), "simpleActor")
-    system.eventStream.subscribe(deadLetterListenerActor, classOf[String])
+    system.eventStream.subscribe(listenerActor, classOf[String])
     simpleActor ! "Simple Test"
   }
 }

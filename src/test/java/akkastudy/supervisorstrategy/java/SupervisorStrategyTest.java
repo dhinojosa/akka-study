@@ -47,7 +47,9 @@ public class SupervisorStrategyTest {
                 }, system.dispatcher()
         );
 
-        Thread.sleep(5000);
+        Thread.sleep(3000);
+        system.shutdown();
+        system.awaitTermination();
     }
 
     /**
@@ -87,7 +89,9 @@ public class SupervisorStrategyTest {
                     }
                 }, system.dispatcher()
         );
-        Thread.sleep(5000);
+        Thread.sleep(3000);
+        system.shutdown();
+        system.awaitTermination();
     }
 
     /**
@@ -121,7 +125,9 @@ public class SupervisorStrategyTest {
                 }, system.dispatcher()
         );
 
-        Thread.sleep(5000);
+        Thread.sleep(3000);
+        system.shutdown();
+        system.awaitTermination();
     }
 
     /**
@@ -174,7 +180,10 @@ public class SupervisorStrategyTest {
                     }
                 }, system.dispatcher()
         );
-        Thread.sleep(5000);
+
+        Thread.sleep(3000);
+        system.shutdown();
+        system.awaitTermination();
     }
 
     /**
@@ -229,6 +238,9 @@ public class SupervisorStrategyTest {
                     }
                 }, system.dispatcher()
         );
+
         Thread.sleep(3000);
+        system.shutdown();
+        system.awaitTermination();
     }
 }

@@ -5,7 +5,6 @@ import akka.event.Logging
 
 class FuturesActor extends Actor {
 
-
   val log = Logging(context.system, this)
 
   def receive = {

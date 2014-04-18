@@ -58,7 +58,7 @@ class FuturesTest extends FlatSpec with Matchers {
       "Hello" + " " + "World"
     }
 
-    future foreach (x => println("I got an answer" + x)) //asynchronous
+    future foreach (x => println(s"I got an answer $x")) //asynchronous
     println("running1")
     println("running2")
     println("running3")
@@ -75,6 +75,7 @@ class FuturesTest extends FlatSpec with Matchers {
     val future2 = Future {
       90 / 3
     }
+
     val result = future1.flatMap {
       x =>
         future2.map {

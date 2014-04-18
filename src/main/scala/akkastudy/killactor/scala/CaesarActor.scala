@@ -16,9 +16,8 @@ class CaesarActor extends Actor {
   val log = Logging(context.system, this)
 
   def receive = {
-    case x: (() => Any) => {
+    case x: (() => Any) =>
       log.debug("Message accepted processing function, and returning {}", x())
-    }
     case _ => log.debug("Unknown message received")
   }
 }

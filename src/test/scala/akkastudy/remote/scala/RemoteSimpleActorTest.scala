@@ -2,7 +2,6 @@ package akkastudy.remote.scala
 
 import org.scalatest.FlatSpec
 import akka.actor.{Props, ActorSystem}
-import akkastudy.loggingactor.scala.SimpleActorScala
 import com.typesafe.config.ConfigFactory
 
 class RemoteSimpleActorTest extends FlatSpec {
@@ -10,11 +9,23 @@ class RemoteSimpleActorTest extends FlatSpec {
 
   it should "receive our message in Scala but remotely" in {
     val config = ConfigFactory.load()
-    val system = ActorSystem("RemoteActorSystem", config.getConfig("remote-system").withFallback(config))
-    val myActor = system.actorOf(Props[SimpleActorScala], name = "simpleActorJava")
-    myActor ! "Simple Test"
-    Thread.sleep(6000)
-    system.shutdown()
-    system.awaitTermination()
+    ActorSystem("RemoteActorSystem", config.getConfig("remote-system").withFallback(config))
+    val localActorSystem = ActorSystem("LocalActorSystem")
+
+    val remoteSimpleActor = localActorSystem.actorOf(Props[SimpleActorScala], name = "simpleActorScala")
+//    val localSenderActor = localActorSystem.actorOf(Props[LocalActorScala], name="senderActor")
+
+    remoteSimpleActor ! "Do it"
+
+//
+//    localSenderActor ! (remoteSimpleActor, "What's up")
+//    Thread.sleep(5000)
+//
+//    //Grab the remote actor via actorSelection
+//    localActorSystem.actorSelection("akka.tcp://RemoteActorSystem@127.0.0.1:10190/user/simpleActorJava") ! "Do it!"
+//    Thread.sleep(5000)
+
+//    remoteActorSystem.shutdown()
+//    remoteActorSystem.awaitTermination()
   }
 }

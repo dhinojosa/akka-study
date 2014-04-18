@@ -20,7 +20,7 @@ class FuturesActor extends Actor {
   val log = Logging(context.system, this)
 
   def receive = {
-    case "Compute" => {
+    case "Compute" =>
       println("Starting: " + Thread.currentThread().getName)
 
       val f = Future {
@@ -29,26 +29,21 @@ class FuturesActor extends Actor {
            14 * 3
        }
 
-       f onSuccess {
-         case x:Int => {
-           println("In the success: " + Thread.currentThread().getName)
-           println(s"Total is: $x")
-         }
-       }
+      f onSuccess {
+        case x:Int =>
+          println("In the success: " + Thread.currentThread().getName)
+          println(s"Total is: $x")
+      }
 
-       f onFailure {
-         case x:Throwable => {
-           println("In the failure: " + Thread.currentThread().getName)
-           println(s"Failure msg: ${x.getMessage}")
-         }
-       }
+      f onFailure {
+        case x:Throwable =>
+          println("In the failure: " + Thread.currentThread().getName)
+          println(s"Failure msg: ${x.getMessage}")
+      }
 
-       println("Ending")
-    }
+      println("Ending")
 
-    case _ => {
-      println("Processing Nothing")
-    }
+    case _ => println("Processing Nothing")
   }
 }
 
