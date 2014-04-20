@@ -1,7 +1,7 @@
 package akkastudy.remote.scala
 
 import org.scalatest.FlatSpec
-import akka.actor.{Props, ActorSystem}
+import akka.actor.{Deploy, Props, ActorSystem}
 import com.typesafe.config.ConfigFactory
 
 class RemoteSimpleActorTest extends FlatSpec {
@@ -9,23 +9,34 @@ class RemoteSimpleActorTest extends FlatSpec {
 
   it should "receive our message in Scala but remotely" in {
     val config = ConfigFactory.load()
-    ActorSystem("RemoteActorSystem", config.getConfig("remote-system").withFallback(config))
-    val localActorSystem = ActorSystem("LocalActorSystem")
+    val actorSystemBeta = ActorSystem("actorSystemBeta", config.getConfig("remote-system-beta").withFallback(config))
+    val actorSystemAlpha  = ActorSystem("actorSystemAlpha", config.getConfig("remote-system-alpha").withFallback(config))
 
-    val remoteSimpleActor = localActorSystem.actorOf(Props[SimpleActorScala], name = "simpleActorScala")
-//    val localSenderActor = localActorSystem.actorOf(Props[LocalActorScala], name="senderActor")
+    val simpleActor = actorSystemAlpha.actorOf(Props[SimpleActorScala], name = "simpleActorScala")
 
-    remoteSimpleActor ! "Do it"
+    simpleActor ! "Do it"
 
-//
-//    localSenderActor ! (remoteSimpleActor, "What's up")
-//    Thread.sleep(5000)
-//
-//    //Grab the remote actor via actorSelection
-//    localActorSystem.actorSelection("akka.tcp://RemoteActorSystem@127.0.0.1:10190/user/simpleActorJava") ! "Do it!"
-//    Thread.sleep(5000)
+    Thread.sleep(5000)
 
-//    remoteActorSystem.shutdown()
-//    remoteActorSystem.awaitTermination()
+    actorSystemAlpha.shutdown()
+    actorSystemAlpha.awaitTermination()
+    actorSystemBeta.shutdown()
+    actorSystemBeta.awaitTermination()
   }
+
+//  it should "receive our message in Scala but remotely with different setup" in {
+//    val config = ConfigFactory.load()
+//    val actorSystemBeta = ActorSystem("actorSystemBeta", config.getConfig("remote-system-beta").withFallback(config))
+//    val actorSystemAlpha  = ActorSystem("actorSystemAlpha", config.getConfig("remote-system-alpha").withFallback(config))
+//
+//    val senderActor = actorSystemAlpha.actorOf(Props[SenderActorScala], name="senderActorScala")
+//
+//    senderActor ! "Do it"
+//
+//    Thread.sleep(5000)
+//    actorSystemAlpha.shutdown()
+//    actorSystemAlpha.awaitTermination()
+//    actorSystemBeta.shutdown()
+//    actorSystemBeta.awaitTermination()
+//  }
 }

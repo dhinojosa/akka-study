@@ -8,6 +8,7 @@ class SimpleActorScala extends Actor {
 
    def receive = {
      case _ @ x ⇒
-       log.info("received message" + x + " in Simple Actor Scala")
+       context.parent.path.name
+       log.info(s"Received Message in Simple Actor Scala: $x")
    }
  }
