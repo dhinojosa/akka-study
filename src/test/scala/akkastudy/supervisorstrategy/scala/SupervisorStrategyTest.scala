@@ -1,16 +1,15 @@
 package akkastudy.supervisorstrategy.scala
 
-import org.scalatest.{Matchers, FlatSpec}
+import org.scalatest.{FunSuite, Matchers}
 import akka.actor.{ActorRef, Props, ActorSystem}
 import akka.util.Timeout
 import akka.pattern.ask
 import scala.concurrent.duration._
 
 
-class SupervisorStrategyTest extends FlatSpec with Matchers {
-  behavior of "A supervisor strategy test"
+class SupervisorStrategyTest extends FunSuite with Matchers {
 
-  it should "Create any child actor and throw an Illegal Argument Exception" in {
+  test("Create any child actor and throw an Illegal Argument Exception") {
     val system = ActorSystem("MySystem")
 
     import system.dispatcher
@@ -29,11 +28,12 @@ class SupervisorStrategyTest extends FlatSpec with Matchers {
     }
 
     Thread.sleep(5000)
+    system.shutdown()
+    system.awaitTermination()
   }
 
-  it should
-    """Create any child actor and throw a NullPointerException then sends another
-      | message since the actor, has been restarted""" in {
+  test(
+    "Create any child actor and throw a NullPointerException then sends another message since the actor, has been restarted") {
 
     val system = ActorSystem("MySystem")
 
@@ -56,12 +56,11 @@ class SupervisorStrategyTest extends FlatSpec with Matchers {
     }
 
     Thread.sleep(5000)
+    system.shutdown()
+    system.awaitTermination()
   }
 
-
-  it should
-    """Resume the child actor if an arithmetic exception is thrown as
-      |  specified in the strategy at the parent""".stripMargin('|') in {
+  test("Resume the child actor if an arithmetic exception is thrown as specified in the strategy at the parent") {
 
     val system = ActorSystem("MySystem")
 
@@ -83,9 +82,11 @@ class SupervisorStrategyTest extends FlatSpec with Matchers {
     }
 
     Thread.sleep(5000)
+    system.shutdown()
+    system.awaitTermination()
   }
 
-  it should "throw restart the child actor, not because of the parent but because of the grandparent" in {
+  test("throw restart the child actor, not because of the parent but because of the grandparent") {
     val system = ActorSystem("MySystem")
 
     import system.dispatcher
@@ -113,11 +114,11 @@ class SupervisorStrategyTest extends FlatSpec with Matchers {
     }
 
     Thread.sleep(5000)
+    system.shutdown()
+    system.awaitTermination()
   }
 
-  it should
-    """Using a One for One Grandparent Actor, and an All for One Parent,
-      | all the parent's will share the same fate""".stripMargin('|') in {
+  test("Using a One for One Grandparent Actor, and an All for One Parent, all the parent's will share the same fate") {
     val system = ActorSystem("MySystem")
 
     import system.dispatcher
@@ -144,5 +145,7 @@ class SupervisorStrategyTest extends FlatSpec with Matchers {
         }
     }
     Thread.sleep(5000)
+    system.shutdown()
+    system.awaitTermination()
   }
 }
