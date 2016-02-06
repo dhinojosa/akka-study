@@ -1,9 +1,12 @@
 package akkastudy.supervisorstrategy.scala
 
+import java.util.concurrent.TimeUnit
+
 import org.scalatest.{FunSuite, Matchers}
 import akka.actor.{ActorRef, Props, ActorSystem}
 import akka.util.Timeout
 import akka.pattern.ask
+import scala.concurrent.Await
 import scala.concurrent.duration._
 
 
@@ -28,8 +31,7 @@ class SupervisorStrategyTest extends FunSuite with Matchers {
     }
 
     Thread.sleep(5000)
-    system.shutdown()
-    system.awaitTermination()
+    Await.result(system.terminate(), Duration(10, TimeUnit.SECONDS))
   }
 
   test(
@@ -56,8 +58,7 @@ class SupervisorStrategyTest extends FunSuite with Matchers {
     }
 
     Thread.sleep(5000)
-    system.shutdown()
-    system.awaitTermination()
+    Await.result(system.terminate(), Duration(10, TimeUnit.SECONDS))
   }
 
   test("Resume the child actor if an arithmetic exception is thrown as specified in the strategy at the parent") {
@@ -82,8 +83,7 @@ class SupervisorStrategyTest extends FunSuite with Matchers {
     }
 
     Thread.sleep(5000)
-    system.shutdown()
-    system.awaitTermination()
+    Await.result(system.terminate(), Duration(10, TimeUnit.SECONDS))
   }
 
   test("throw restart the child actor, not because of the parent but because of the grandparent") {
@@ -114,8 +114,7 @@ class SupervisorStrategyTest extends FunSuite with Matchers {
     }
 
     Thread.sleep(5000)
-    system.shutdown()
-    system.awaitTermination()
+    Await.result(system.terminate(), Duration(10, TimeUnit.SECONDS))
   }
 
   test("Using a One for One Grandparent Actor, and an All for One Parent, all the parent's will share the same fate") {
@@ -145,7 +144,6 @@ class SupervisorStrategyTest extends FunSuite with Matchers {
         }
     }
     Thread.sleep(5000)
-    system.shutdown()
-    system.awaitTermination()
+    Await.result(system.terminate(), Duration(10, TimeUnit.SECONDS))
   }
 }
