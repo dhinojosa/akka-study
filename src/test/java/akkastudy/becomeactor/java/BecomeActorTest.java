@@ -3,8 +3,7 @@ package akkastudy.becomeactor.java;
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.actor.Props;
-import akkastudy.becomeactor.java.BecomeActor;
-import akkastudy.remote.java.SenderActor;
+import akkastudy.remote.java.SenderActorJava;
 import org.junit.Test;
 
 /**
@@ -19,7 +18,7 @@ public class BecomeActorTest {
     public void testBasicAsynchronousAsk() throws InterruptedException {
         ActorSystem system = ActorSystem.create("MySystem");
         ActorRef becomeActor = system.actorOf(Props.create(BecomeActor.class), "becomeActor");
-        ActorRef senderActor = system.actorOf(Props.create(SenderActor.class), "senderActor");
+        ActorRef senderActor = system.actorOf(Props.create(SenderActorJava.class), "senderActor");
 
         becomeActor.tell("goHiking", senderActor);
         becomeActor.tell("goHiking", senderActor);
