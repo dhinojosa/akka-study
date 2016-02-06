@@ -1,10 +1,15 @@
 package akkastudy.locationtransparency.scala
 
+import java.util.concurrent.TimeUnit
+
 import org.scalatest.FlatSpec
 import akka.actor.{Props, ActorSystem}
 import com.typesafe.config.ConfigFactory
-import akkastudy.remote.scala.{LocalActorScala, SimpleActorScala}
+import akkastudy.remote.scala.LocalActorScala
 import akkastudy.locationtransparency.{ParentActor, ChildActor}
+
+import scala.concurrent.Await
+import scala.concurrent.duration.Duration
 
 /**
  *
@@ -15,7 +20,7 @@ import akkastudy.locationtransparency.{ParentActor, ChildActor}
  *        tel: 505.363.5832
  */
 class LocationTransparencyTest extends FlatSpec {
-  behavior of "Location Transparency"
+  behavior of "Location Transparency in Scala"
 
   it should "have a parent and child actor where they can span across remote instances" in {
     val config = ConfigFactory.load()
@@ -24,14 +29,12 @@ class LocationTransparencyTest extends FlatSpec {
     val localActorSystem = ActorSystem("LocalActorSystem")
 
     localActorSystem.actorOf(Props[ChildActor], name = "childActor")
-    val parentActor = localActorSystem.actorOf(Props[ParentActor], name="parentActor")
+    val parentActor = localActorSystem.actorOf(Props[ParentActor], name = "parentActor")
 
 
-    parentActor ! ("child", "cool!")
+    parentActor !("child", "cool!")
     Thread.sleep(10000)
-    remoteActorSystem.shutdown()
-    remoteActorSystem.awaitTermination()
-    localActorSystem.shutdown()
-    localActorSystem.awaitTermination()
+    Await.result(remoteActorSystem.terminate(), Duration(10, TimeUnit.SECONDS))
+    Await.result(localActorSystem.terminate(), Duration(10, TimeUnit.SECONDS))
   }
 }
