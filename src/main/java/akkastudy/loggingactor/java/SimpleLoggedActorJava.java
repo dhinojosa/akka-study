@@ -14,9 +14,10 @@ public class SimpleLoggedActorJava extends UntypedActor {
     }
 
     @Override
-    public void preRestart(Throwable reason, Option<Object> message) {
+    public void preRestart(Throwable reason, Option<Object> message) throws Exception {
         log.error(reason, "Restarting due to [{}] when processing [{}]",
                 reason.getMessage(), message.isDefined() ? message.get() : "");
+        super.preRestart(reason, message);
     }
 
     public void onReceive(Object message) {
