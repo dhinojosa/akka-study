@@ -9,7 +9,7 @@ public class SimpleActorJava extends UntypedActor {
 
     public void onReceive(Object message) {
         if (message instanceof String)
-            log.info("Received String message in SimpleActorJava {}", message);
+            log.info("Received String message in SimpleActorJava: {}", message);
         else
             unhandled(message);
     }
