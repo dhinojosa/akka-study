@@ -34,6 +34,6 @@ public class OneForOneParentActor extends UntypedActor {
             Props props = (Props) message;
             getSender().tell(getContext().actorOf(props), self());
         }
-        unhandled(message);
+        else unhandled(message);
     }
 }
