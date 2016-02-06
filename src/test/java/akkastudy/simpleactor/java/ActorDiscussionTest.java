@@ -1,11 +1,30 @@
 package akkastudy.simpleactor.java;
 
-/**
- * @author Daniel Hinojosa
- * @since 2/3/16 7:59 PM
- * url: <a href="http://www.evolutionnext.com">http://www.evolutionnext.com</a>
- * email: <a href="mailto:dhinojosa@evolutionnext.com">dhinojosa@evolutionnext.com</a>
- * tel: 505.363.5832
- */
+import akka.actor.ActorSelection;
+import akka.actor.ActorSystem;
+import akka.actor.Props;
+import org.junit.Test;
+import scala.concurrent.Await;
+import scala.concurrent.duration.Duration;
+
+import java.util.concurrent.TimeUnit;
+
 public class ActorDiscussionTest {
+
+    @Test
+    public void testActorSelection() throws Exception {
+        ActorSystem system = ActorSystem.create("MySystem");
+
+        system.actorOf(
+                Props.create(BenAffleckJava.class), "benAffleckJava");
+        system.actorOf(
+                Props.create(MattDamonJava.class), "mattDamonJava");
+
+        Thread.sleep(2000);
+        ActorSelection myActor = system.actorSelection("akka://MySystem/user/benAffleckJava");
+
+        myActor.tell("Ask Matt!", system.deadLetters());
+        Thread.sleep(10000);
+        Await.result(system.terminate(), Duration.apply(10, TimeUnit.SECONDS));
+    }
 }
