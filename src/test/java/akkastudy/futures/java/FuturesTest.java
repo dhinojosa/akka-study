@@ -27,7 +27,6 @@ import java.util.concurrent.Executors;
  * show various uses of Futures in Java.
  */
 public class FuturesTest {
-
     /**
      * Simple test that show the sequential result of the output since Await.result blocks.  "Step 1" should show at the
      * command line first time, then the result of "Hello World" then "Step 2".  This should display always.
@@ -41,7 +40,8 @@ public class FuturesTest {
         ExecutorService executorService =
                 Executors.newCachedThreadPool();
 
-        Callable<String> asynchronousTask = new Callable<String>() {
+        Callable<String> asynchronousTask
+                = new Callable<String>() {
             @Override
             public String call() throws Exception {
                 //something expensive
@@ -67,29 +67,33 @@ public class FuturesTest {
             @Override
             public String call() throws Exception {
                 //something expensive
-                Thread.sleep(5000);
+                Thread.sleep(500);
                 return "Asynchronous String Result";
             }
         };
 
         java.util.concurrent.Future<String> future =
                 executorService.submit(asynchronousTask);
+
         System.out.println("Processing Asynchronously 1");
         while (!future.isDone()) {
             System.out.println("Doing something else");
         }
-        System.out.println(future.get()); //waits if necessary
+        System.out.println(future.get()); //immediate
         System.out.println("Processing Asynchronously 2");
     }
 
 
     @Test
-    public void testBasicAkkaFutures() throws Exception {
-        ExecutionContext executionContext = ExecutionContexts.fromExecutorService(Executors.newFixedThreadPool(12));
+    public void testBasicScalaFutures() throws Exception {
+        ExecutionContext executionContext =
+                ExecutionContexts.fromExecutorService
+                        (Executors.newFixedThreadPool(12));
 
         Callable<String> callable = new Callable<String>() {
             @Override
             public String call() throws Exception {
+                Thread.sleep(4000);
                 return "Test Basic Futures: Hello World";
             }
         };
@@ -108,13 +112,14 @@ public class FuturesTest {
      * {@link java.util.concurrent.ExecutorService}
      */
     @Test
-    public void testAsynchronousCall() {
+    public void testAsynchronousCall() throws InterruptedException {
         ExecutorService executorService = Executors.newFixedThreadPool(12);
         ExecutionContext executionContext = ExecutionContexts.fromExecutorService(executorService);
 
         Callable<String> callable = new Callable<String>() {
             @Override
             public String call() throws Exception {
+                Thread.sleep(5000);
                 return "Test Asynchronous Call: Hello World";
             }
         };
@@ -129,9 +134,11 @@ public class FuturesTest {
                 else System.out.println("Success: " + success);
             }
         }, executionContext);
+
         System.out.println("Test Asynchronous Call: Step 2");
         System.out.println("Test Asynchronous Call: Step 3");
         System.out.println("Test Asynchronous Call: Step 4");
+        Thread.sleep(10000);
     }
 
     @Test
@@ -183,6 +190,7 @@ public class FuturesTest {
         }, executionContext);
 
         promisedFuture.onFailure(onFailure, executionContext);
+        Thread.sleep(10000);
     }
 
     //
@@ -191,25 +199,30 @@ public class FuturesTest {
 //     * which will eventually return a result, at which time the {@link PrintResult} class will print the result.
 //     */
     @Test
-    public void testAskActorAsynchronouslyNonBlocked() {
+    public void testAskActorAsynchronouslyNonBlocked() throws InterruptedException {
         OnComplete<Object> onComplete = new OnComplete<Object>() {
             @Override
             public void onComplete(Throwable failure, Object success) throws Throwable {
-                if (success != null) System.out.format("Got the answer: %s\n", success);
+                if (success != null) System.out.format
+                        ("Got the answer: %s\n", success);
                 else failure.printStackTrace();
             }
         };
 
         Timeout timeout = new Timeout(Duration.create(5, "seconds"));
         ActorSystem system = ActorSystem.create("MySystem");
-        ActorRef actor = system.actorOf(Props.create(AskActor.class), "askActor");
+        ActorRef actor = system.actorOf(Props.create(AskActor.class),
+                "askActor");
 
         Future<Object> future = Patterns.ask(actor, "Ping", timeout);
+        future.onComplete(onComplete, system.dispatcher());
+
         System.out.println("Test Ask Actor Asynchronous Call: Step 1");
         System.out.println("Test Ask Actor Asynchronous Call: Step 2");
-        future.onComplete(onComplete, system.dispatcher());
         System.out.println("Test Ask Actor Asynchronous Call: Step 3");
         System.out.println("Test Ask Actor Asynchronous Call: Step 4");
+        Thread.sleep(5000);
+
     }
 
     /**
