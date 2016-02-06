@@ -1,7 +1,12 @@
 package akkastudy.stopactor.scala
 
+import java.util.concurrent.TimeUnit
+
 import akka.actor.{Props, ActorSystem}
 import org.scalatest.FlatSpec
+
+import scala.concurrent.Await
+import scala.concurrent.duration.Duration
 
 class StopActorTest extends FlatSpec {
   behavior of "stopping an actor"
@@ -15,6 +20,7 @@ class StopActorTest extends FlatSpec {
     myActor1 ! "test"
     system.stop(myActor2)
     Thread.sleep(5000)
+    Await.result(system.terminate(), Duration(10, TimeUnit.SECONDS))
   }
 
   it should "it should stop all actors when the system is shutdown" in {
@@ -25,7 +31,7 @@ class StopActorTest extends FlatSpec {
     system.actorOf(Props[StopActorScala], name = "stopActorScala3")
     myActor0 ! "Simple Test"
     myActor1 ! "test"
-    system.shutdown()
     Thread.sleep(5000)
+    Await.result(system.terminate(), Duration(10, TimeUnit.SECONDS))
   }
 }
