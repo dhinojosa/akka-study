@@ -9,6 +9,8 @@ import scala.concurrent.Await;
 import scala.concurrent.Future;
 import scala.concurrent.duration.Duration;
 
+import java.util.concurrent.TimeUnit;
+
 import static akka.pattern.Patterns.ask;
 
 /**
@@ -26,16 +28,19 @@ public class AskActorTest {
      * Test a basic actor using ask which will return a <code>Future</code>
      */
     @Test
-    public void testBasicAsynchronousAsk() throws InterruptedException {
+    public void testBasicAsynchronousAsk() throws Exception {
         ActorSystem system = ActorSystem.create("MySystem");
-        ActorRef actor = system.actorOf(Props.create(AskActor.class), "askActor");
+        ActorRef actor = system.actorOf
+                (Props.create(AskActor.class), "askActor");
         Future<Object> future = ask(actor, "Ping", 4000);
         future.onSuccess(new OnSuccess<Object>() {
             @Override
             public void onSuccess(Object result) throws Throwable {
-                System.out.println(result);
+                System.out.println("Received Result" + result);
             }
         }, system.dispatcher());
+        Thread.sleep(10000);
+        Await.result(system.terminate(), Duration.apply(10, TimeUnit.SECONDS));
     }
 
     @Test
@@ -43,6 +48,6 @@ public class AskActorTest {
         ActorSystem system = ActorSystem.create("MySystem");
         ActorRef actor = system.actorOf(Props.create(AskActor.class), "askActor");
         Future<Object> future = ask(actor, "Ping", 4000);
-        Await.result(future, Duration.create(5, "seconds"));
+        Await.result(future, Duration.create(5, "seconds"));  //blocked
     }
 }

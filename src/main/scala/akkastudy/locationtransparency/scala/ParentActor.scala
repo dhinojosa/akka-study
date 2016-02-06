@@ -14,8 +14,8 @@ class ParentActor extends Actor with ActorLogging {
   val id = 201123
 
   override def preStart() {
-
-    val actorSelection = context.actorSelection("akka.tcp://RemoteActorSystem@127.0.0.1:10190/user/childActor")
+    val actorSelection =
+      context.actorSelection("akka.tcp://RemoteActorSystem@127.0.0.1:10190/user/childActor")
     actorSelection ! Identify(id)
     actorSelection ! "Cool Try this"
   }
