@@ -7,7 +7,9 @@ import akka.dispatch.OnComplete;
 import akka.pattern.Patterns;
 import akka.util.Timeout;
 import org.junit.Test;
+import scala.concurrent.Await;
 import scala.concurrent.Future;
+import scala.concurrent.duration.Duration;
 
 import java.util.concurrent.TimeUnit;
 
@@ -21,35 +23,37 @@ public class SupervisorStrategyTest {
      *
      * @throws InterruptedException
      */
+    @SuppressWarnings("unchecked")
     @Test
-    public void testActor() throws InterruptedException {
+    public void testActor() throws Exception {
         ActorSystem system = ActorSystem.create("MySystem");
 
         Timeout timeout = new Timeout(5, TimeUnit.SECONDS);
 
-        ActorRef grandparent = system.actorOf(Props.create(OneForOneGrandparentActor.class),
-                "GrandparentActorScala");
+        ActorRef grandparent = system.actorOf(
+                Props.create(OneForOneGrandparentActor.class),
+                "GrandparentActorJava");
 
         Future<Object> childActorFuture1 = Patterns.ask
-                (grandparent, Props.create(ExceptionalChildActor.class), timeout);
-
-        grandparent.tell(Props.create(ExceptionalChildActor.class), null);
-        grandparent.tell(Props.create(ExceptionalChildActor.class), null);
+                (grandparent, Props.create(ExceptionalChildActor.class),
+                        timeout);
 
         Thread.sleep(3000);
 
         childActorFuture1.onComplete(
                 new OnComplete<Object>() {
                     @Override
-                    public void onComplete(Throwable failure, Object success) throws Throwable {
-                        ((ActorRef) success).tell("IllegalArgumentException", null);
+                    public void onComplete(Throwable failure, Object actorRef)
+                            throws Throwable {
+                        ((ActorRef) actorRef).tell("IllegalArgumentException", null);
                     }
                 }, system.dispatcher()
         );
 
-        Thread.sleep(3000);
-        system.shutdown();
-        system.awaitTermination();
+
+        Thread.sleep(13000);
+        System.out.println("Shutting Down Server");
+        Await.result(system.terminate(), Duration.apply(10, TimeUnit.SECONDS));
     }
 
     /**
@@ -59,7 +63,7 @@ public class SupervisorStrategyTest {
      * @throws InterruptedException
      */
     @Test
-    public void testActorWithAFactory() throws InterruptedException {
+    public void testActorWithAFactory() throws Exception {
         final ActorSystem system = ActorSystem.create("MySystem");
 
         final Timeout timeout = new Timeout(5, TimeUnit.SECONDS);
@@ -89,9 +93,9 @@ public class SupervisorStrategyTest {
                     }
                 }, system.dispatcher()
         );
-        Thread.sleep(3000);
-        system.shutdown();
-        system.awaitTermination();
+        Thread.sleep(15000);
+        System.out.println("Shutting down the server");
+        Await.result(system.terminate(), Duration.apply(10, TimeUnit.SECONDS));
     }
 
     /**
@@ -101,7 +105,7 @@ public class SupervisorStrategyTest {
      * @throws InterruptedException
      */
     @Test
-    public void testActor3() throws InterruptedException {
+    public void testActor3() throws Exception {
         ActorSystem system = ActorSystem.create("MySystem");
 
         Timeout timeout = new Timeout(5, TimeUnit.SECONDS);
@@ -125,9 +129,9 @@ public class SupervisorStrategyTest {
                 }, system.dispatcher()
         );
 
-        Thread.sleep(3000);
-        system.shutdown();
-        system.awaitTermination();
+        Thread.sleep(15000);
+        System.out.println("Shutting down the server");
+        Await.result(system.terminate(), Duration.apply(10, TimeUnit.SECONDS));
     }
 
     /**
@@ -137,7 +141,7 @@ public class SupervisorStrategyTest {
      * @throws InterruptedException
      */
     @Test
-    public void testActor4() throws InterruptedException {
+    public void testActor4() throws Exception {
         final ActorSystem system = ActorSystem.create("MySystem");
 
         final Timeout timeout = new Timeout(5, TimeUnit.SECONDS);
@@ -181,9 +185,9 @@ public class SupervisorStrategyTest {
                 }, system.dispatcher()
         );
 
-        Thread.sleep(3000);
-        system.shutdown();
-        system.awaitTermination();
+        Thread.sleep(15000);
+        System.out.println("Shutting down server");
+        Await.result(system.terminate(), Duration.apply(10, TimeUnit.SECONDS));
     }
 
     /**
@@ -193,7 +197,7 @@ public class SupervisorStrategyTest {
      * @throws InterruptedException
      */
     @Test
-    public void test5() throws InterruptedException {
+    public void test5() throws Exception {
         final ActorSystem system = ActorSystem.create("MySystem");
 
         final Timeout timeout = new Timeout(60, TimeUnit.SECONDS);
@@ -239,8 +243,8 @@ public class SupervisorStrategyTest {
                 }, system.dispatcher()
         );
 
-        Thread.sleep(3000);
-        system.shutdown();
-        system.awaitTermination();
+        Thread.sleep(15000);
+        System.out.println("Shutting down server");
+        Await.result(system.terminate(), Duration.apply(10, TimeUnit.SECONDS));
     }
 }
