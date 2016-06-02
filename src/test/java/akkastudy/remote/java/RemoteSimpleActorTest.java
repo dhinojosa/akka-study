@@ -22,7 +22,7 @@ public class RemoteSimpleActorTest {
 
 
         ActorRef simpleActorJava = remoteSystem.actorOf
-                (Props.create(SimpleActorJava.class), "senderActorJava");
+                (Props.create(SimpleActorJava.class), "simpleActorJava");
 
         simpleActorJava.tell("Send Message", remoteSystem.deadLetters());
 

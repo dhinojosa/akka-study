@@ -15,7 +15,9 @@ public class AskActor extends UntypedActor {
     @Override
     public void onReceive(Object message) throws Exception {
         if (message.equals("Ping")) {
-          sender().tell("Pong", self());
+            Thread.sleep(2000);
+            System.out.println("3. " + Thread.currentThread().getName());
+            sender().tell("Pong", self());
         }
     }
 }

@@ -1,9 +1,6 @@
 package akkastudy.supervisorstrategy.java;
 
-import akka.actor.OneForOneStrategy;
-import akka.actor.Props;
-import akka.actor.SupervisorStrategy;
-import akka.actor.UntypedActor;
+import akka.actor.*;
 import akka.event.Logging;
 import akka.event.LoggingAdapter;
 import akka.japi.Function;
@@ -17,7 +14,7 @@ public class OneForOneGrandparentActor extends UntypedActor {
 
     @Override
     public SupervisorStrategy supervisorStrategy() {
-        return new OneForOneStrategy(10, Duration.create(1, TimeUnit.MINUTES),
+        return new OneForOneStrategy(10, Duration.create(10, TimeUnit.MILLISECONDS),
                 new Function<Throwable, SupervisorStrategy.Directive>() {
                     @Override
                     public SupervisorStrategy.Directive apply(Throwable param)
@@ -38,7 +35,8 @@ public class OneForOneGrandparentActor extends UntypedActor {
     public void onReceive(Object message) throws Exception {
         if (message instanceof Props) {
             Props props = (Props) message;
-            getSender().tell(getContext().actorOf(props), self());
+            ActorRef child = getContext().actorOf(props);
+            getSender().tell(child, self());
         } else {
             log.info("Unhandled message of type: " + message.getClass().getName());
             unhandled(message);

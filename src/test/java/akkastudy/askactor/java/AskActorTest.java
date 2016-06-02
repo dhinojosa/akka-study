@@ -33,10 +33,12 @@ public class AskActorTest {
         ActorRef actor = system.actorOf
                 (Props.create(AskActor.class), "askActor");
         Future<Object> future = ask(actor, "Ping", 4000);
+        System.out.println("1. " + Thread.currentThread().getName());
         future.onSuccess(new OnSuccess<Object>() {
             @Override
             public void onSuccess(Object result) throws Throwable {
-                System.out.println("Received Result" + result);
+                System.out.println("2. " + Thread.currentThread().getName());
+                System.out.println("Received Result: " + result);
             }
         }, system.dispatcher());
         Thread.sleep(10000);
@@ -49,5 +51,6 @@ public class AskActorTest {
         ActorRef actor = system.actorOf(Props.create(AskActor.class), "askActor");
         Future<Object> future = ask(actor, "Ping", 4000);
         Await.result(future, Duration.create(5, "seconds"));  //blocked
+        Await.result(system.terminate(), Duration.apply(10, TimeUnit.SECONDS));
     }
 }

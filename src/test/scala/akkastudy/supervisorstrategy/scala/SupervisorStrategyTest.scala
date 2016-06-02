@@ -18,20 +18,17 @@ class SupervisorStrategyTest extends FunSuite with Matchers {
     import system.dispatcher
     implicit val timeout = new Timeout(5 seconds)
 
-    val grandparent = system.actorOf(Props[OneForOneGrandparentActor], name = "GrandparentActorScala")
+    val grandparent = system.actorOf(Props[OneForOneGrandparentActor], name = "grandparentActorScala")
 
     val childActorFuture1 = grandparent ? Props[ExceptionalChildActor]
 
-    grandparent ! Props[ExceptionalChildActor]
-    grandparent ! Props[ExceptionalChildActor]
-
-    Thread.sleep(3000)
     childActorFuture1 foreach {
       _.asInstanceOf[ActorRef] ! "IllegalArgumentException" //Asynchronous wait for the ref, throw the IAE
     }
 
-    Thread.sleep(5000)
-    Await.result(system.terminate(), Duration(10, TimeUnit.SECONDS))
+    Thread.sleep(10000)
+    Await.result(system.terminate(), Duration(1, TimeUnit.SECONDS))
+    Thread.sleep(3000)
   }
 
   test(

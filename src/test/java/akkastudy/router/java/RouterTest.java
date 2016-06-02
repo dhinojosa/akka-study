@@ -30,17 +30,9 @@ public class RouterTest {
         ActorRef senderActor = actorSystem.actorOf
                 (Props.create(SenderActor.class));
 
-        router.tell("test", senderActor);
-        router.tell("test", senderActor);
-        router.tell("test", senderActor);
-        router.tell("test", senderActor);
-        router.tell("test", senderActor);
-        router.tell("test", senderActor);
-        router.tell("test", senderActor);
-        router.tell("test", senderActor);
-        router.tell("test", senderActor);
-        router.tell("test", senderActor);
-        router.tell("test", senderActor);
+        for (int i = 0; i < 100; i++) {
+            router.tell("test", senderActor);
+        }
 
         Thread.sleep(15000);
         Await.result(actorSystem.terminate(),

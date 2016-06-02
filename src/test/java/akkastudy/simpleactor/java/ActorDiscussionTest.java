@@ -21,9 +21,11 @@ public class ActorDiscussionTest {
                 Props.create(MattDamonJava.class), "mattDamonJava");
 
         Thread.sleep(2000);
-        ActorSelection myActor = system.actorSelection("akka://MySystem/user/benAffleckJava");
+        ActorSelection benAffleckRef =
+                system.actorSelection
+                        ("akka://MySystem/user/benAffleckJava");
 
-        myActor.tell("Ask Matt!", system.deadLetters());
+        benAffleckRef.tell("Ask Matt!", system.deadLetters());
         Thread.sleep(10000);
         Await.result(system.terminate(), Duration.apply(10, TimeUnit.SECONDS));
     }

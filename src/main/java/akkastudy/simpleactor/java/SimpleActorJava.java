@@ -6,7 +6,8 @@ import akka.event.LoggingAdapter;
 
 public class SimpleActorJava extends UntypedActor {
     LoggingAdapter log =
-            Logging.getLogger(getContext().system(), this);
+            Logging.getLogger(getContext().system(),
+                    this);
 
     public void onReceive(Object message) {
         if (message instanceof String)

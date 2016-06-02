@@ -35,7 +35,8 @@ public class SupervisorStrategyTest {
                 "GrandparentActorJava");
 
         Future<Object> childActorFuture1 = Patterns.ask
-                (grandparent, Props.create(ExceptionalChildActor.class),
+                (grandparent,
+                        Props.create(ExceptionalChildActor.class),
                         timeout);
 
         Thread.sleep(3000);

@@ -77,6 +77,7 @@ public class FuturesTest {
 
         System.out.println("Processing Asynchronously 1");
         while (!future.isDone()) {
+            //What to do while we are waiting
             System.out.println("Doing something else");
         }
         System.out.println(future.get()); //immediate
@@ -113,8 +114,10 @@ public class FuturesTest {
      */
     @Test
     public void testAsynchronousCall() throws InterruptedException {
-        ExecutorService executorService = Executors.newFixedThreadPool(12);
-        ExecutionContext executionContext = ExecutionContexts.fromExecutorService(executorService);
+        ExecutorService executorService =
+                Executors.newFixedThreadPool(3);
+        ExecutionContext executionContext =
+                ExecutionContexts.fromExecutorService(executorService);
 
         Callable<String> callable = new Callable<String>() {
             @Override
@@ -164,13 +167,15 @@ public class FuturesTest {
         }
 
         Promise<String> promise = Futures.promise();
-        Future<Integer> future = Futures.future(new MyCallable(promise), executionContext);
+        Future<Integer> future = Futures.
+                future(new MyCallable(promise), executionContext);
         Future<String> promisedFuture = promise.future();
 
         future.onSuccess(new OnSuccess<Integer>() {
             @Override
             public void onSuccess(Integer result) throws Throwable {
-                System.out.format("Received a response for my future: %s\n", result);
+                System.out.format("Received a response for my future: %s\n",
+                        result);
             }
         }, executionContext);
 
