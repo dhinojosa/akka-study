@@ -6,8 +6,8 @@ import akka.event.Logging
 class SimpleActorScala extends Actor {
    val log = Logging(context.system, this)
 
-   def receive = {
+   def receive: Receive = {
      case x:String =>
-       log.info("received message: " + x + " in Simple Actor Scala")
+       log.info("received message in Simple Actor Scala {}", x)
    }
  }

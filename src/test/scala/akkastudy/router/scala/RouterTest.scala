@@ -37,6 +37,5 @@ class RouterTest extends FlatSpec with Matchers {
 
     Thread.sleep(15000)
     Await.result(system.terminate(), Duration(10, TimeUnit.SECONDS))
-    Thread.sleep(2000)
   }
 }

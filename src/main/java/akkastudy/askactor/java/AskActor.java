@@ -1,6 +1,8 @@
 package akkastudy.askactor.java;
 
+import akka.actor.AbstractActor;
 import akka.actor.UntypedActor;
+import akka.japi.pf.FI;
 
 /**
  * Created by Daniel Hinojosa
@@ -11,13 +13,16 @@ import akka.actor.UntypedActor;
  * email: <a href="mailto:dhinojosa@evolutionnext.com">dhinojosa@evolutionnext.com</a>
  * tel: 505.363.5832
  */
-public class AskActor extends UntypedActor {
+public class AskActor extends AbstractActor {
     @Override
-    public void onReceive(Object message) throws Exception {
-        if (message.equals("Ping")) {
-            Thread.sleep(2000);
-            System.out.println("3. " + Thread.currentThread().getName());
-            sender().tell("Pong", self());
-        }
+    public Receive createReceive() {
+        return receiveBuilder().matchEquals("Ping", new FI.UnitApply<String>() {
+            @Override
+            public void apply(String s) throws Exception {
+                Thread.sleep(2000);
+                System.out.println("3. " + Thread.currentThread().getName());
+                sender().tell("Pong", self());
+            }
+        }).build();
     }
 }

@@ -10,6 +10,7 @@ public class MattDamonJava extends UntypedActor {
 
     public void onReceive(Object message) {
         if (message instanceof String) {
+            System.out.println(Thread.currentThread().getName());
             log.info("Matt: Got message {}", message);
             sender().tell(1, self());
         } else unhandled(message);

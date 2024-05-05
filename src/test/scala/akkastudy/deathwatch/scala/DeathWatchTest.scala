@@ -15,7 +15,7 @@ class DeathWatchTest extends FlatSpec with Matchers {
   behavior of "Death Watch"
 
   it should "An actor can be notified of a termination by using the same supervisory facilities" in {
-    val actorSystem = ActorSystem("DeathWatchActorSystem")
+    val actorSystem = ActorSystem("MyActorSystem")
     val deathWatcherActor = actorSystem.actorOf(Props[DeathWatcherActor], "DeathWatchActor")
     deathWatcherActor ! "kill"
   }

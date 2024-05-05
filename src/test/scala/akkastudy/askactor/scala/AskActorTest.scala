@@ -24,7 +24,7 @@ class AskActorTest extends FunSuite {
   }
 
   test("Call in using an ask with ? method") {
-    import akka.pattern.ask
+    //import akka.pattern.ask
     import system.dispatcher
 
     implicit val timeout = Timeout(5 seconds)

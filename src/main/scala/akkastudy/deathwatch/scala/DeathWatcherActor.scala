@@ -25,9 +25,10 @@ class DeathWatcherActor extends Actor with ActorLogging {
     context.watch(simpleActor)
   }
 
-  override def receive = {
+  override def receive: PartialFunction[Any, Unit] = {
     case "kill" => context.stop(simpleActor)
     case Terminated(actorRef) =>
-      log.info("Simple Actor has been terminated")
+      log.info("""Simple Actor has been terminated, we know this because this
+        is a death watcher""");
   }
 }

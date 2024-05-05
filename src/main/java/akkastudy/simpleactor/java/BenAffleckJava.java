@@ -14,7 +14,7 @@ public class BenAffleckJava extends UntypedActor {
         ActorSelection selection = getContext().actorSelection("../mattDamonJava");
         if (message instanceof String) {
             log.info("Ben: Sending message to Matt Damon");
-
+            System.out.println(Thread.currentThread().getName());
             selection.tell
                     ("Hello, Matt, how many fingers am I holding up?",
                             self());

@@ -19,13 +19,10 @@ public class SimpleActorTest {
         ActorRef myActor = system.actorOf(
                 Props.create(SimpleActorJava.class),
                 "simpleActorJava");
-
-
         System.out.println(Thread.currentThread().getName());
-        myActor.tell("Bueno!", system.deadLetters());
+        myActor.tell("Hello!", system.deadLetters());
         Thread.sleep(10000);
         Await.result(system.terminate(), Duration.apply(10, TimeUnit.SECONDS));
-
     }
 
     @Test
